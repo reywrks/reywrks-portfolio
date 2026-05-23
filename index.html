@@ -7,1085 +7,1055 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
   <style>
-    /* ===================== RESET & ROOT ===================== */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
       --bg: #080808;
-      --bg2: #111111;
+      --bg2: #0f0f0f;
+      --bg3: #151515;
       --purple: #8B5CF6;
       --purple-dark: #6D28D9;
-      --purple-glow: rgba(139, 92, 246, 0.25);
-      --white: #F5F5F0;
-      --grey: #888888;
-      --border: rgba(255,255,255,0.08);
+      --purple-light: #A78BFA;
+      --purple-glow: rgba(139, 92, 246, 0.2);
+      --white: #F0EEE9;
+      --grey: #777;
+      --grey-light: #aaa;
+      --border: rgba(255,255,255,0.07);
       --font-display: 'Bebas Neue', sans-serif;
       --font-heading: 'Syne', sans-serif;
       --font-body: 'DM Sans', sans-serif;
     }
 
     html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--white);
-      font-family: var(--font-body);
-      overflow-x: hidden;
-      cursor: default;
-    }
-
-    /* custom scrollbar */
-    ::-webkit-scrollbar { width: 4px; }
+    body { background: var(--bg); color: var(--white); font-family: var(--font-body); overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 2px; }
 
-    /* ===================== NOISE OVERLAY ===================== */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 9999;
-      opacity: 0.4;
+    /* noise grain */
+    body::after {
+      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.35;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
     }
 
-    /* ===================== NAV ===================== */
+    /* ════════════ NAV ════════════ */
     nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.4rem 4rem;
-      background: rgba(8,8,8,0.85);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-      transition: all 0.3s;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 3rem;
+      transition: background 0.4s, border-color 0.4s;
+      border-bottom: 1px solid transparent;
     }
-
+    nav.scrolled {
+      background: rgba(8,8,8,0.92);
+      backdrop-filter: blur(20px);
+      border-color: var(--border);
+    }
     .nav-logo {
-      font-family: var(--font-heading);
-      font-weight: 800;
-      font-size: 1.3rem;
-      letter-spacing: -0.03em;
-      color: var(--white);
-      text-decoration: none;
+      font-family: var(--font-heading); font-weight: 800;
+      font-size: 1.2rem; letter-spacing: -0.03em;
+      color: var(--white); text-decoration: none; z-index: 2;
     }
     .nav-logo span { color: var(--purple); }
-
-    .nav-links {
-      display: flex;
-      gap: 2.5rem;
-      list-style: none;
-    }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
     .nav-links a {
-      color: var(--grey);
-      text-decoration: none;
-      font-size: 0.85rem;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      transition: color 0.2s;
-      position: relative;
+      color: rgba(255,255,255,0.55); text-decoration: none;
+      font-size: 0.8rem; font-weight: 500; letter-spacing: 0.1em;
+      text-transform: uppercase; transition: color 0.2s; position: relative;
     }
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: -4px; left: 0;
-      width: 0; height: 1px;
-      background: var(--purple);
-      transition: width 0.3s;
-    }
+    .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1px; background: var(--purple); transition: width 0.3s; }
     .nav-links a:hover { color: var(--white); }
     .nav-links a:hover::after { width: 100%; }
-
-    .nav-cta {
-      background: var(--purple);
-      color: var(--white) !important;
-      padding: 0.5rem 1.2rem;
-      border-radius: 4px;
-      font-size: 0.8rem !important;
-      font-weight: 600 !important;
-      letter-spacing: 0.06em !important;
-      transition: background 0.2s, transform 0.2s !important;
+    .nav-pill {
+      background: var(--purple); color: #fff !important;
+      padding: 0.42rem 1.1rem; border-radius: 999px;
+      font-size: 0.75rem !important; font-weight: 700 !important; letter-spacing: 0.08em !important;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s !important;
     }
-    .nav-cta:hover { background: var(--purple-dark) !important; transform: translateY(-1px); }
-    .nav-cta::after { display: none !important; }
+    .nav-pill:hover { background: var(--purple-dark) !important; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(139,92,246,0.4); }
+    .nav-pill::after { display: none !important; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--white); border-radius: 2px; transition: all 0.3s; }
 
-    /* hamburger */
-    .hamburger {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
-      background: none;
-      border: none;
-      padding: 4px;
-    }
-    .hamburger span {
-      display: block;
-      width: 24px; height: 2px;
-      background: var(--white);
-      border-radius: 2px;
-      transition: all 0.3s;
-    }
-
-    /* ===================== HERO ===================== */
+    /* ════════════ HERO BANNER ════════════ */
     #hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding: 10rem 4rem 6rem;
       position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 600px;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
     }
 
-    /* big background text */
-    .hero-bg-text {
-      position: absolute;
-      bottom: -2rem;
-      right: -1rem;
-      font-family: var(--font-display);
-      font-size: clamp(8rem, 18vw, 22rem);
-      color: transparent;
-      -webkit-text-stroke: 1px rgba(139, 92, 246, 0.12);
-      pointer-events: none;
-      line-height: 1;
-      white-space: nowrap;
-      user-select: none;
+    /* ─── The banner image ─────────────────────────────────────────
+       BANNER SIZE: save your image as  banner.jpg
+       Recommended size: 1920 × 1080 px  (standard full HD)
+       Minimum size:     1280 × 720 px
+       Any wide landscape photo works — it will auto-crop to fill.
+    ──────────────────────────────────────────────────────────────── */
+    .hero-banner-img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      filter: brightness(0.45) saturate(0.8);
+      transform: scale(1.04);
+      animation: subtleZoom 12s ease-in-out infinite alternate;
+    }
+    @keyframes subtleZoom { from{transform:scale(1.04)} to{transform:scale(1.08)} }
+
+    /* shown when banner.jpg is not added yet */
+    .hero-banner-placeholder {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, #0d0d1a 0%, #12091f 40%, #0a0a0a 100%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hero-banner-placeholder-inner {
+      text-align: center; color: #2a2a2a;
+      border: 1px dashed #1f1f1f; padding: 2rem 3rem; border-radius: 8px;
+    }
+    .hero-banner-placeholder-inner p { font-size: 0.8rem; margin-top: 0.5rem; line-height: 1.6; }
+    .hero-banner-placeholder-inner strong { color: #3a3a3a; font-family: var(--font-heading); }
+
+    /* gradient overlays on banner */
+    .hero-overlay {
+      position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background:
+        linear-gradient(to top, rgba(8,8,8,1) 0%, rgba(8,8,8,0.6) 40%, rgba(8,8,8,0.1) 100%),
+        linear-gradient(to right, rgba(8,8,8,0.5) 0%, transparent 60%);
     }
 
-    /* purple blob glow */
-    .hero-glow {
-      position: absolute;
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%);
-      top: 50%; right: 10%;
-      transform: translateY(-50%);
-      pointer-events: none;
-      animation: pulse 6s ease-in-out infinite alternate;
-    }
-
-    @keyframes pulse {
-      from { opacity: 0.6; transform: translateY(-50%) scale(1); }
-      to   { opacity: 1;   transform: translateY(-50%) scale(1.1); }
+    /* purple tint wash */
+    .hero-tint {
+      position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background: radial-gradient(ellipse at 30% 80%, rgba(139,92,246,0.12) 0%, transparent 60%);
     }
 
     .hero-content {
-      position: relative;
-      z-index: 2;
-      max-width: 900px;
+      position: relative; z-index: 2;
+      padding: 0 3.5rem 3.5rem;
     }
 
-    .hero-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.75rem;
-      font-weight: 500;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--purple);
-      border: 1px solid rgba(139,92,246,0.3);
-      padding: 0.4rem 1rem;
-      border-radius: 999px;
-      margin-bottom: 2rem;
-      opacity: 0;
-      animation: fadeUp 0.8s 0.2s forwards;
+    .hero-status {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3);
+      color: var(--purple-light); font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 0.35rem 0.9rem; border-radius: 999px;
+      margin-bottom: 1.2rem;
+      opacity: 0; animation: fadeUp 0.8s 0.3s forwards;
     }
-    .hero-tag::before {
-      content: '';
-      width: 6px; height: 6px;
-      background: var(--purple);
-      border-radius: 50%;
-      animation: blink 1.5s infinite;
-    }
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-
-    .hero-greeting {
-      font-family: var(--font-body);
-      font-size: 1.1rem;
-      font-weight: 300;
-      color: var(--grey);
-      letter-spacing: 0.05em;
-      margin-bottom: 0.5rem;
-      opacity: 0;
-      animation: fadeUp 0.8s 0.4s forwards;
-    }
+    .hero-status::before { content: ''; width: 6px; height: 6px; background: var(--purple); border-radius: 50%; animation: blink 1.5s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
 
     .hero-name {
       font-family: var(--font-display);
-      font-size: clamp(5rem, 12vw, 11rem);
-      line-height: 0.9;
-      letter-spacing: 0.02em;
-      opacity: 0;
-      animation: fadeUp 0.8s 0.5s forwards;
-    }
-    .hero-name span { color: var(--purple); }
-
-    .hero-roles {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin: 1.5rem 0;
-      font-family: var(--font-heading);
-      font-size: clamp(1rem, 2.5vw, 1.4rem);
-      font-weight: 600;
-      opacity: 0;
-      animation: fadeUp 0.8s 0.7s forwards;
-    }
-    .hero-roles .divider {
-      width: 40px; height: 2px;
-      background: var(--purple);
-      flex-shrink: 0;
-    }
-    .role-highlight { color: var(--purple); }
-
-    .hero-desc {
-      max-width: 520px;
-      font-size: 1rem;
-      line-height: 1.75;
-      color: var(--grey);
-      font-weight: 300;
-      margin-bottom: 2.5rem;
-      opacity: 0;
-      animation: fadeUp 0.8s 0.9s forwards;
-    }
-
-    .hero-buttons {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      opacity: 0;
-      animation: fadeUp 0.8s 1.1s forwards;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.85rem 1.8rem;
-      border-radius: 6px;
-      font-family: var(--font-heading);
-      font-size: 0.9rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.25s;
-      cursor: pointer;
-      border: none;
-    }
-    .btn-primary {
-      background: var(--purple);
-      color: #fff;
-    }
-    .btn-primary:hover { background: var(--purple-dark); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(139,92,246,0.4); }
-
-    .btn-ghost {
-      background: transparent;
+      font-size: clamp(5rem, 14vw, 13rem);
+      line-height: 0.85;
+      letter-spacing: 0.03em;
       color: var(--white);
-      border: 1px solid var(--border);
+      opacity: 0; animation: fadeUp 0.9s 0.4s forwards;
     }
-    .btn-ghost:hover { border-color: var(--purple); color: var(--purple); transform: translateY(-2px); }
-
-    /* ===================== HERO PHOTO ===================== */
-    .hero-photo-area {
-      position: absolute;
-      right: 4rem;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 2;
-      opacity: 0;
-      animation: fadeIn 1s 1s forwards;
+    .hero-name .accent { color: var(--purple); }
+    .hero-name .outline {
+      -webkit-text-stroke: 1px rgba(255,255,255,0.25);
+      color: transparent;
     }
 
-    .hero-photo-frame {
-      width: 280px;
-      height: 360px;
-      position: relative;
+    .hero-bottom-row {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-top: 1.5rem; flex-wrap: wrap; gap: 1rem;
+      opacity: 0; animation: fadeUp 0.9s 0.65s forwards;
+    }
+    .hero-roles {
+      display: flex; align-items: center; gap: 1rem;
+      font-family: var(--font-heading); font-weight: 700;
+      font-size: clamp(0.9rem, 2vw, 1.2rem);
+    }
+    .hero-roles .sep { color: var(--purple); font-size: 1.4rem; line-height: 1; }
+    .hero-tagline {
+      max-width: 300px; font-size: 0.82rem; line-height: 1.65;
+      color: rgba(255,255,255,0.45); font-style: italic;
+      text-align: right;
     }
 
-    .hero-photo-frame::before {
-      content: '';
-      position: absolute;
-      inset: -3px;
-      background: linear-gradient(135deg, var(--purple), transparent 60%);
-      border-radius: 12px;
-      z-index: -1;
+    /* scroll hint */
+    .scroll-hint {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+      opacity: 0; animation: fadeIn 1s 1.5s forwards;
     }
-
-    .hero-photo-frame img,
-    .hero-photo-placeholder {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 10px;
-      display: block;
-      filter: grayscale(20%);
+    .scroll-hint span { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+    .scroll-arrow {
+      width: 1px; height: 40px; background: linear-gradient(to bottom, rgba(255,255,255,0.15), var(--purple));
+      animation: scrollPulse 2s ease-in-out infinite;
     }
+    @keyframes scrollPulse { 0%,100%{opacity:0.4;transform:scaleY(1)} 50%{opacity:1;transform:scaleY(1.3)} }
 
-    /* placeholder shown when no image */
-    .hero-photo-placeholder {
-      background: var(--bg2);
-      border: 2px dashed rgba(139,92,246,0.4);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      color: var(--grey);
-      font-size: 0.8rem;
-      text-align: center;
-      padding: 1rem;
-    }
-    .hero-photo-placeholder svg { opacity: 0.4; }
-
-    .photo-badge {
-      position: absolute;
-      bottom: -16px;
-      left: -20px;
-      background: var(--purple);
-      color: #fff;
-      font-family: var(--font-heading);
-      font-weight: 700;
-      font-size: 0.75rem;
-      padding: 0.6rem 1rem;
-      border-radius: 6px;
-      white-space: nowrap;
-      box-shadow: 0 4px 20px rgba(139,92,246,0.5);
-    }
-
-    /* ===================== MARQUEE ===================== */
-    .marquee-strip {
-      background: var(--purple);
-      padding: 0.9rem 0;
+    /* ════════════ HORIZONTAL PROJECT SCROLLER ════════════ */
+    .reel-section {
+      padding: 0;
       overflow: hidden;
-      white-space: nowrap;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
     }
-    .marquee-track {
-      display: inline-block;
-      animation: marquee 18s linear infinite;
+
+    .reel-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.8rem 3rem 1.2rem;
     }
-    .marquee-track span {
+    .reel-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.25em;
+      text-transform: uppercase; color: var(--purple);
+    }
+    .reel-count { font-family: var(--font-display); font-size: 1rem; color: #333; letter-spacing: 0.1em; }
+
+    /* row container */
+    .reel-row { overflow: hidden; padding: 0.4rem 0; }
+    .reel-row:first-of-type { border-bottom: 1px solid var(--border); }
+
+    /* the sliding track */
+    .reel-track {
+      display: flex; gap: 14px; width: max-content;
+      padding: 0 14px;
+    }
+    .reel-row:nth-child(2) .reel-track { animation: reelLeft 35s linear infinite; }
+    .reel-row:nth-child(3) .reel-track { animation: reelRight 28s linear infinite; }
+    .reel-row:hover .reel-track { animation-play-state: paused; }
+
+    @keyframes reelLeft  { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    @keyframes reelRight { from{transform:translateX(-50%)} to{transform:translateX(0)} }
+
+    /* individual project card in the reel */
+    .reel-card {
+      flex-shrink: 0;
+      width: 300px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      position: relative;
+      cursor: pointer;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+    .reel-card:hover {
+      border-color: rgba(139,92,246,0.5);
+      transform: scale(1.03);
+      box-shadow: 0 16px 50px rgba(0,0,0,0.6), 0 0 25px var(--purple-glow);
+    }
+
+    .reel-card img {
+      width: 100%; height: 185px; object-fit: cover; display: block;
+      transition: transform 0.5s;
+    }
+    .reel-card:hover img { transform: scale(1.06); }
+
+    /* placeholder when no image */
+    .reel-placeholder {
+      width: 100%; height: 185px;
+      background: var(--bg3);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0.5rem; color: #222;
+      transition: transform 0.5s;
+    }
+    .reel-card:hover .reel-placeholder { transform: scale(1.06); }
+    .reel-placeholder-icon { font-size: 1.8rem; opacity: 0.3; }
+    .reel-placeholder-text { font-size: 0.65rem; font-family: var(--font-heading); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #1e1e1e; }
+
+    .reel-info { padding: 0.85rem 1rem; }
+    .reel-cat {
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--purple); margin-bottom: 0.2rem;
+    }
+    .reel-title { font-family: var(--font-heading); font-weight: 700; font-size: 0.88rem; }
+
+    /* ════════════ MARQUEE STRIP ════════════ */
+    .marquee-strip {
+      background: var(--purple); padding: 0.8rem 0;
+      overflow: hidden; white-space: nowrap;
+    }
+    .marquee-track { display: inline-block; animation: marquee 20s linear infinite; }
+    .marquee-track span { font-family: var(--font-display); font-size: 1rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.9); padding: 0 1.6rem; }
+    .marquee-track span.dot { color: rgba(255,255,255,0.4); padding: 0 0.3rem; }
+    @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* ════════════ ABOUT — editorial ════════════ */
+    #about {
+      padding: 7rem 3rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: start;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .about-left {}
+    .about-eyebrow {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.25em;
+      text-transform: uppercase; color: var(--purple); margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .about-eyebrow::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .about-big-quote {
       font-family: var(--font-display);
-      font-size: 1.1rem;
-      letter-spacing: 0.1em;
-      color: #fff;
-      padding: 0 2rem;
-      opacity: 0.9;
+      font-size: clamp(2.8rem, 5vw, 5rem);
+      line-height: 1;
+      letter-spacing: 0.02em;
+      margin-bottom: 2.5rem;
     }
-    .marquee-track span.dot { color: rgba(255,255,255,0.5); padding: 0 0.5rem; }
-    @keyframes marquee {
-      from { transform: translateX(0); }
-      to { transform: translateX(-50%); }
-    }
-
-    /* ===================== SECTIONS COMMON ===================== */
-    section { padding: 7rem 4rem; }
-
-    .section-label {
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--purple);
-      margin-bottom: 0.75rem;
+    .about-big-quote .q-purple { color: var(--purple); }
+    .about-big-quote .q-outline {
+      -webkit-text-stroke: 1px rgba(255,255,255,0.2);
+      color: transparent;
     }
 
+    .about-body {
+      font-size: 1rem; line-height: 1.85; color: #888; font-weight: 300;
+      border-left: 2px solid var(--purple);
+      padding-left: 1.2rem; margin-bottom: 2.5rem;
+    }
+    .about-body strong { color: var(--white); font-weight: 500; }
+
+    /* stat strip */
+    .stat-strip { display: flex; gap: 0; }
+    .stat-item {
+      flex: 1; padding: 1.4rem 1.2rem;
+      border: 1px solid var(--border); background: var(--bg2);
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .stat-item:not(:first-child) { border-left: none; }
+    .stat-item:first-child { border-radius: 8px 0 0 8px; }
+    .stat-item:last-child { border-radius: 0 8px 8px 0; }
+    .stat-item:hover { border-color: rgba(139,92,246,0.4); background: rgba(139,92,246,0.05); }
+    .stat-num { font-family: var(--font-display); font-size: 2.4rem; color: var(--purple); line-height: 1; }
+    .stat-lbl { font-size: 0.72rem; color: var(--grey); margin-top: 0.25rem; font-weight: 400; }
+
+    /* right side: tools + currently available card */
+    .about-right { padding-top: 2.5rem; }
+
+    .available-card {
+      background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(109,40,217,0.05));
+      border: 1px solid rgba(139,92,246,0.25);
+      border-radius: 12px; padding: 1.6rem 1.8rem;
+      margin-bottom: 2rem; position: relative; overflow: hidden;
+    }
+    .available-card::before {
+      content: ''; position: absolute; top: -30px; right: -30px;
+      width: 120px; height: 120px;
+      background: radial-gradient(circle, rgba(139,92,246,0.2), transparent 70%);
+      pointer-events: none;
+    }
+    .available-dot {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--purple); margin-bottom: 0.8rem;
+    }
+    .available-dot::before { content: ''; width: 7px; height: 7px; background: #4ade80; border-radius: 50%; box-shadow: 0 0 8px #4ade80; animation: blink 2s infinite; }
+    .available-card h3 { font-family: var(--font-heading); font-weight: 800; font-size: 1.1rem; margin-bottom: 0.4rem; }
+    .available-card p { font-size: 0.82rem; color: var(--grey); line-height: 1.6; }
+
+    .tools-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--grey); margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .tools-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; }
+    .tool-chip {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 8px; padding: 1rem 0.8rem;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 0.4rem; text-align: center; transition: all 0.3s;
+    }
+    .tool-chip:hover { border-color: var(--purple); transform: translateY(-3px); box-shadow: 0 6px 20px var(--purple-glow); }
+    .tool-chip .ti { font-size: 1.6rem; }
+    .tool-chip .tool-img {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      border-radius: 10px;
+    }
+    .tool-chip .tn { font-size: 0.65rem; color: var(--grey); font-weight: 500; }
+
+    /* ════════════ SKILLS — horizontal tabs ════════════ */
+    #skills {
+      padding: 7rem 3rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .skills-top {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 3rem; flex-wrap: wrap; gap: 1rem;
+    }
+    .section-eyebrow {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.25em;
+      text-transform: uppercase; color: var(--purple); margin-bottom: 0.7rem;
+    }
     .section-title {
       font-family: var(--font-display);
-      font-size: clamp(3rem, 7vw, 6rem);
-      line-height: 0.95;
-      letter-spacing: 0.02em;
-      margin-bottom: 1.5rem;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      line-height: 0.9; letter-spacing: 0.02em;
     }
 
-    .section-line {
-      width: 60px; height: 3px;
-      background: var(--purple);
-      margin-bottom: 2rem;
-    }
-
-    /* ===================== ABOUT ===================== */
-    #about {
+    /* number cards */
+    .skills-numbered {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 5rem;
-      align-items: center;
-      border-top: 1px solid var(--border);
-    }
-
-    .about-text p {
-      font-size: 1.05rem;
-      line-height: 1.85;
-      color: #aaa;
-      font-weight: 300;
-    }
-    .about-text p strong { color: var(--white); font-weight: 500; }
-
-    .about-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin-top: 2.5rem;
-    }
-    .stat-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.4rem;
-      transition: border-color 0.3s;
-    }
-    .stat-card:hover { border-color: var(--purple); }
-    .stat-number {
-      font-family: var(--font-display);
-      font-size: 2.8rem;
-      color: var(--purple);
-      line-height: 1;
-    }
-    .stat-label {
-      font-size: 0.8rem;
-      color: var(--grey);
-      margin-top: 0.3rem;
-      font-weight: 400;
-    }
-
-    /* tools grid */
-    .tools-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-    }
-    .tool-item {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      text-align: center;
-      transition: all 0.3s;
-    }
-    .tool-item:hover {
-      border-color: var(--purple);
-      transform: translateY(-4px);
-      box-shadow: 0 8px 30px var(--purple-glow);
-    }
-    .tool-icon { font-size: 1.8rem; }
-    .tool-name { font-size: 0.75rem; color: var(--grey); font-weight: 500; }
-
-    /* ===================== SKILLS ===================== */
-    #skills {
-      border-top: 1px solid var(--border);
-      background: linear-gradient(180deg, transparent, rgba(139,92,246,0.04), transparent);
-    }
-
-    .skills-intro {
-      max-width: 600px;
-      margin-bottom: 3rem;
-    }
-    .skills-intro p { color: var(--grey); line-height: 1.7; }
-
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1.2rem;
-    }
-
-    .skill-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.6rem;
-      transition: all 0.3s;
-      position: relative;
-      overflow: hidden;
-    }
-    .skill-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 3px; height: 100%;
-      background: var(--purple);
-      transform: scaleY(0);
-      transition: transform 0.3s;
-      transform-origin: bottom;
-    }
-    .skill-card:hover { border-color: rgba(139,92,246,0.4); transform: translateY(-4px); }
-    .skill-card:hover::before { transform: scaleY(1); }
-
-    .skill-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
-    .skill-name {
-      font-family: var(--font-heading);
-      font-weight: 700;
-      font-size: 0.95rem;
-      margin-bottom: 0.4rem;
-    }
-    .skill-desc { font-size: 0.82rem; color: var(--grey); line-height: 1.6; }
-
-    /* ===================== PROJECTS ===================== */
-    #projects { border-top: 1px solid var(--border); }
-
-    .projects-header {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      margin-bottom: 3rem;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .projects-filter {
-      display: flex;
-      gap: 0.6rem;
-      flex-wrap: wrap;
-    }
-    .filter-btn {
-      padding: 0.45rem 1.1rem;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 500;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--grey);
-      transition: all 0.2s;
-      font-family: var(--font-body);
-    }
-    .filter-btn:hover, .filter-btn.active {
-      background: var(--purple);
-      border-color: var(--purple);
-      color: #fff;
-    }
-
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .project-card {
-      background: var(--bg2);
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
       border: 1px solid var(--border);
       border-radius: 12px;
       overflow: hidden;
-      transition: all 0.35s;
-      cursor: pointer;
+      margin-bottom: 2rem;
     }
-    .project-card:hover {
-      border-color: rgba(139,92,246,0.5);
-      transform: translateY(-6px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 30px var(--purple-glow);
+    .skill-num-card {
+      background: var(--bg2); padding: 2rem 1.5rem;
+      transition: background 0.3s;
+      position: relative; overflow: hidden;
     }
+    .skill-num-card::after {
+      content: attr(data-num);
+      position: absolute; bottom: -0.5rem; right: 0.5rem;
+      font-family: var(--font-display); font-size: 5rem;
+      color: rgba(139,92,246,0.06); pointer-events: none; line-height: 1;
+    }
+    .skill-num-card:hover { background: rgba(139,92,246,0.05); }
+    .snc-num { font-family: var(--font-display); font-size: 3.5rem; color: var(--purple); line-height: 1; margin-bottom: 0.8rem; }
+    .snc-title { font-family: var(--font-heading); font-weight: 700; font-size: 0.85rem; margin-bottom: 0.4rem; }
+    .snc-desc { font-size: 0.75rem; color: var(--grey); line-height: 1.6; }
 
-    .project-img {
-      width: 100%;
-      aspect-ratio: 16/10;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.5s;
+    /* skills list rows */
+    .skills-rows { display: flex; flex-direction: column; gap: 0; }
+    .skill-row {
+      display: flex; align-items: center; gap: 1.5rem;
+      padding: 1.1rem 0; border-bottom: 1px solid var(--border);
+      transition: padding-left 0.3s;
+      cursor: default;
     }
-    .project-card:hover .project-img { transform: scale(1.04); }
+    .skill-row:hover { padding-left: 0.6rem; }
+    .skill-row-num { font-family: var(--font-display); font-size: 1.1rem; color: #222; min-width: 2.5rem; }
+    .skill-row-name { font-family: var(--font-heading); font-weight: 700; font-size: 1rem; flex: 1; }
+    .skill-row-tag {
+      font-size: 0.62rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--grey);
+      border: 1px solid var(--border); padding: 0.2rem 0.6rem; border-radius: 4px;
+    }
+    .skill-row:hover .skill-row-name { color: var(--purple); }
+    .skill-row:hover .skill-row-tag { border-color: rgba(139,92,246,0.3); color: var(--purple); }
 
-    /* image placeholder */
-    .project-img-placeholder {
-      width: 100%;
-      aspect-ratio: 16/10;
-      background: #1a1a1a;
+    /* ════════════ ALL PROJECTS (detailed grid) ════════════ */
+    #projects {
+      padding: 7rem 3rem;
       border-bottom: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0.6rem;
-      color: #444;
-      font-size: 0.75rem;
+    }
+
+    .proj-top {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem;
+    }
+    .filter-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .filter-btn {
+      padding: 0.38rem 0.95rem; border-radius: 999px;
+      font-size: 0.72rem; font-weight: 600; cursor: pointer;
+      border: 1px solid var(--border); background: transparent;
+      color: var(--grey); transition: all 0.2s; font-family: var(--font-body);
+      letter-spacing: 0.05em;
+    }
+    .filter-btn:hover, .filter-btn.active { background: var(--purple); border-color: var(--purple); color: #fff; }
+
+    .proj-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+    }
+    .proj-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden;
+      transition: all 0.35s; cursor: pointer;
+    }
+    .proj-card:hover {
+      border-color: rgba(139,92,246,0.4);
+      transform: translateY(-5px);
+      box-shadow: 0 18px 55px rgba(0,0,0,0.5), 0 0 25px var(--purple-glow);
+    }
+    .proj-img {
+      width: 100%; aspect-ratio: 16/10;
+      object-fit: cover; display: block; transition: transform 0.5s;
+    }
+    .proj-card:hover .proj-img { transform: scale(1.05); }
+    .proj-placeholder {
+      width: 100%; aspect-ratio: 16/10;
+      background: var(--bg3);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 0.4rem; color: #1f1f1f; font-size: 0.68rem;
       transition: transform 0.5s;
     }
-    .project-card:hover .project-img-placeholder { transform: scale(1.04); }
-    .project-img-placeholder svg { opacity: 0.3; }
+    .proj-card:hover .proj-placeholder { transform: scale(1.05); }
+    .proj-placeholder svg { opacity: 0.15; }
+    .proj-info { padding: 1.1rem 1.3rem; }
+    .proj-cat { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--purple); margin-bottom: 0.28rem; }
+    .proj-title { font-family: var(--font-heading); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.28rem; }
+    .proj-desc { font-size: 0.76rem; color: var(--grey); line-height: 1.6; }
 
-    .project-info {
-      padding: 1.4rem 1.6rem;
-    }
-    .project-category {
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--purple);
-      margin-bottom: 0.4rem;
-    }
-    .project-title {
-      font-family: var(--font-heading);
-      font-weight: 700;
-      font-size: 1rem;
-      margin-bottom: 0.4rem;
-    }
-    .project-desc {
-      font-size: 0.82rem;
-      color: var(--grey);
-      line-height: 1.6;
-    }
-
-    /* ===================== CTA SECTION ===================== */
+    /* ════════════ CONTACT ════════════ */
     #contact {
-      border-top: 1px solid var(--border);
+      padding: 9rem 3rem;
       text-align: center;
-      background: radial-gradient(ellipse at center, rgba(139,92,246,0.1) 0%, transparent 70%);
+      position: relative;
+      overflow: hidden;
+    }
+    #contact::before {
+      content: 'LETS WORK';
+      position: absolute; bottom: -2rem; left: 50%; transform: translateX(-50%);
+      font-family: var(--font-display); font-size: clamp(5rem, 18vw, 18rem);
+      color: transparent; -webkit-text-stroke: 1px rgba(139,92,246,0.06);
+      pointer-events: none; white-space: nowrap; line-height: 1;
     }
 
-    .cta-taglines {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
+    .contact-pills {
+      display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;
     }
-    .cta-tagline {
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--grey);
-      border: 1px solid var(--border);
-      padding: 0.3rem 0.8rem;
-      border-radius: 4px;
+    .contact-pill {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.18em;
+      text-transform: uppercase; color: #444;
+      border: 1px solid #1f1f1f; padding: 0.25rem 0.7rem; border-radius: 4px;
     }
+    .contact-title {
+      font-family: var(--font-display);
+      font-size: clamp(4rem, 12vw, 11rem);
+      line-height: 0.88; letter-spacing: 0.02em; margin-bottom: 1.5rem;
+    }
+    .contact-title .ct-outline { -webkit-text-stroke: 1px rgba(255,255,255,0.15); color: transparent; }
+    .contact-title .ct-purple { color: var(--purple); }
 
-    #contact .section-title {
-      font-size: clamp(3.5rem, 9vw, 8rem);
-      margin-bottom: 1rem;
-    }
-    #contact p {
-      color: var(--grey);
-      font-size: 1rem;
-      max-width: 460px;
-      margin: 0 auto 2.5rem;
-      line-height: 1.7;
-    }
+    .contact-sub { font-size: 0.95rem; color: var(--grey); max-width: 420px; margin: 0 auto 2.5rem; line-height: 1.7; }
 
-    .contact-buttons {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
+    .contact-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3rem; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 1.8rem; border-radius: 8px;
+      font-family: var(--font-heading); font-size: 0.88rem; font-weight: 600;
+      text-decoration: none; transition: all 0.25s; cursor: pointer; border: none;
     }
+    .btn-primary { background: var(--purple); color: #fff; }
+    .btn-primary:hover { background: var(--purple-dark); transform: translateY(-2px); box-shadow: 0 10px 35px rgba(139,92,246,0.45); }
+    .btn-ghost { background: transparent; color: var(--white); border: 1px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--purple); color: var(--purple); transform: translateY(-2px); }
 
-    /* ===================== FOOTER ===================== */
+    /* social links row */
+    .social-row { display: flex; gap: 2rem; justify-content: center; align-items: center; }
+    .social-link {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--grey); text-decoration: none;
+      transition: color 0.2s; position: relative;
+    }
+    .social-link::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 1px; background: var(--purple); transition: width 0.3s; }
+    .social-link:hover { color: var(--white); }
+    .social-link:hover::after { width: 100%; }
+
+    /* ════════════ FOOTER ════════════ */
     footer {
-      padding: 2rem 4rem;
-      border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1rem;
+      padding: 1.5rem 3rem; border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
     }
-
-    .footer-logo {
-      font-family: var(--font-heading);
-      font-weight: 800;
-      font-size: 1.1rem;
-    }
+    .footer-logo { font-family: var(--font-heading); font-weight: 800; font-size: 1rem; }
     .footer-logo span { color: var(--purple); }
+    .footer-copy { font-size: 0.72rem; color: #333; }
+    .footer-right { font-size: 0.72rem; color: #333; font-style: italic; }
 
-    .footer-copy {
-      font-size: 0.78rem;
-      color: var(--grey);
-    }
+    /* ════════════ ANIMATIONS ════════════ */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.75s ease, transform 0.75s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
 
-    .footer-socials {
-      display: flex;
-      gap: 1rem;
+    /* ════════════ RESPONSIVE ════════════ */
+    @media (max-width: 1024px) {
+      .skills-numbered { grid-template-columns: repeat(2, 1fr); }
+      .proj-grid { grid-template-columns: repeat(2, 1fr); }
     }
-    .footer-socials a {
-      color: var(--grey);
-      font-size: 0.78rem;
-      text-decoration: none;
-      transition: color 0.2s;
-      font-weight: 500;
-    }
-    .footer-socials a:hover { color: var(--purple); }
-
-    /* ===================== ANIMATIONS ===================== */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .reveal.visible {
-      opacity: 1;
-      transform: none;
-    }
-
-    /* ===================== RESPONSIVE ===================== */
     @media (max-width: 900px) {
-      nav { padding: 1.2rem 1.5rem; }
+      nav { padding: 1rem 1.5rem; }
       .nav-links { display: none; }
-      .nav-links.open {
-        display: flex;
-        flex-direction: column;
-        position: absolute;
-        top: 100%; left: 0; right: 0;
-        background: rgba(8,8,8,0.97);
-        padding: 1.5rem 2rem;
-        border-bottom: 1px solid var(--border);
-        gap: 1.5rem;
-      }
+      .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(8,8,8,0.98); padding: 1.5rem 2rem; border-bottom: 1px solid var(--border); gap: 1.5rem; }
       .hamburger { display: flex; }
-
-      #hero { padding: 8rem 1.5rem 4rem; }
-      .hero-photo-area { display: none; }
-
-      section { padding: 5rem 1.5rem; }
-
-      #about { grid-template-columns: 1fr; gap: 3rem; }
-
-      footer { flex-direction: column; text-align: center; }
+      .hero-content { padding: 0 1.5rem 2.5rem; }
+      #about { grid-template-columns: 1fr; gap: 3.5rem; padding: 5rem 1.5rem; }
+      #skills, #projects, #contact { padding: 5rem 1.5rem; }
+      .skills-numbered { grid-template-columns: repeat(2, 1fr); }
+      .proj-grid { grid-template-columns: 1fr; }
+      .reel-header { padding: 1.5rem 1.5rem 1rem; }
+      footer { flex-direction: column; text-align: center; padding: 1.5rem; }
     }
-
     @media (max-width: 600px) {
-      .projects-grid { grid-template-columns: 1fr; }
+      .hero-bottom-row { flex-direction: column; align-items: flex-start; }
+      .hero-tagline { text-align: left; }
+      .skills-numbered { grid-template-columns: 1fr; }
       .tools-grid { grid-template-columns: repeat(2, 1fr); }
-      .about-stats { grid-template-columns: 1fr 1fr; }
+      .stat-strip { flex-direction: column; }
+      .stat-item:first-child { border-radius: 8px 8px 0 0; }
+      .stat-item:last-child { border-radius: 0 0 8px 8px; }
+      .stat-item:not(:first-child) { border-left: 1px solid var(--border); border-top: none; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ===== NAVIGATION ===== -->
+  <!-- ══ NAV ══ -->
   <nav id="navbar">
     <a href="#hero" class="nav-logo">Rey<span>WRKS</span>.</a>
-
     <ul class="nav-links" id="navLinks">
-      <li><a href="#hero">Home</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#skills">Skills</a></li>
       <li><a href="#projects">Projects</a></li>
-      <li><a href="#contact" class="nav-cta">Let's Work</a></li>
+      <li><a href="#contact" class="nav-pill">Let's Work</a></li>
     </ul>
-
     <button class="hamburger" id="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
   </nav>
 
 
-  <!-- ===== HERO ===== -->
+  <!-- ══ HERO BANNER ══ -->
   <section id="hero">
-    <div class="hero-glow"></div>
-    <div class="hero-bg-text">WRKS</div>
+
+    <!-- ════════════════════════════════════════════════════════
+         BANNER IMAGE — HOW TO ADD IT:
+
+         1. Save your banner image as:   banner.jpg
+            (put it in the same folder as index.html)
+
+         2. Recommended size:  1920 × 1080 px
+            Minimum size:      1280 × 720 px
+            Format:            JPG or PNG (JPG is better for photos)
+            Tip: wide landscape photos work best. Portraits or
+            group shots are fine too — the image auto-crops to fill.
+
+         3. Delete the <div class="hero-banner-placeholder">...</div>
+            block below.
+
+         4. Uncomment the <img> line below it.
+    ════════════════════════════════════════════════════════ -->
+    <img src="banner.jpg" alt="ReyWRKS Banner" class="hero-banner-img" />
+
+    <div class="hero-overlay"></div>
+    <div class="hero-tint"></div>
 
     <div class="hero-content">
-      <div class="hero-tag">📍 Philippines — Open for Work</div>
+      <div class="hero-status">📍 Philippines — Available for Work</div>
 
-      <p class="hero-greeting">Hey there, I'm</p>
-      <h1 class="hero-name">REY<span>.</span></h1>
+      <h1 class="hero-name">
+        REY<span class="accent">.</span><br/>
+        <span class="outline">WRKS</span>
+      </h1>
 
-      <div class="hero-roles">
-        <span class="role-highlight">Video Editor</span>
-        <div class="divider"></div>
-        <span>Graphic Designer</span>
-      </div>
-
-      <p class="hero-desc">
-        Crafting visuals that stop people from skipping. Whether it's editing videos or designing graphics, I bring ideas to life with <strong style="color:var(--white)">precision and creativity</strong>.
-      </p>
-
-      <div class="hero-buttons">
-        <a href="#projects" class="btn btn-primary">
-          View My Work
-          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-        </a>
-        <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+      <div class="hero-bottom-row">
+        <div class="hero-roles">
+          <span style="color:var(--purple)">Video Editor</span>
+          <span class="sep">×</span>
+          <span>Graphic Designer</span>
+        </div>
+        <p class="hero-tagline">"Design with intention.<br/>Design with purpose."</p>
       </div>
     </div>
 
-    <!-- ========================================================
-         PHOTO AREA
-         HOW TO ADD YOUR PHOTO:
-         1. Save your photo as "rey.jpg" (or rey.png)
-         2. Put that file in the SAME folder as this index.html
-         3. Delete the <div class="hero-photo-placeholder">...</div> block below
-         4. Uncomment the <img> line below it
-    ======================================================== -->
-    <div class="hero-photo-area">
-      <div class="hero-photo-frame">
-
-        
-        <img src="rey.jpg" alt="Rey — Video Editor & Graphic Designer" class="hero-photo-frame" />
-        
-
-        <div class="photo-badge">🇵🇭 Based in Philippines</div>
-      </div>
+    <div class="scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-arrow"></div>
     </div>
   </section>
 
 
-  <!-- ===== MARQUEE ===== -->
+  <!-- ══ HORIZONTAL PROJECT SCROLLER ══ -->
+  <!--
+    HOW TO ADD YOUR IMAGES TO THE SCROLLER:
+    For each reel-card, find <div class="reel-placeholder"> and DELETE it,
+    then add: <img src="YOUR-IMAGE.jpg" alt="description" />
+    right above <div class="reel-info">
+
+    Do the same for the duplicate cards (the second set marked DUPLICATE)
+    — they're needed so the scroll loops without a gap.
+
+    Suggested filenames: ads1.jpg, ads2.jpg, thumb1.jpg, thumb2.jpg,
+                         video1.jpg, video2.jpg, mag1.jpg, mockup1.jpg
+  -->
+  <div class="reel-section">
+    <div class="reel-header">
+      <span class="reel-label">✦ Best Works</span>
+      <span class="reel-count">06 PROJECTS</span>
+    </div>
+
+    <!-- ROW 1: scrolls left -->
+    <div class="reel-row">
+      <div class="reel-track">
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">🎨</div><div class="reel-placeholder-text">ads1.jpg</div></div>
+          <!-- <img src="ads1.jpg" alt="Advertising Design 1" /> -->
+          <div class="reel-info"><div class="reel-cat">Graphic Design</div><div class="reel-title">Advertising Designs</div></div>
+        </div>
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">🖼️</div><div class="reel-placeholder-text">thumb1.jpg</div></div>
+          <!-- <img src="thumb1.jpg" alt="Thumbnail 1" /> -->
+          <div class="reel-info"><div class="reel-cat">Thumbnail</div><div class="reel-title">Shorts & Reels Thumbnails</div></div>
+        </div>
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">🎬</div><div class="reel-placeholder-text">video1.jpg</div></div>
+          <!-- <img src="video1.jpg" alt="Video Edit 1" /> -->
+          <div class="reel-info"><div class="reel-cat">Video Editing</div><div class="reel-title">Short-Form Content</div></div>
+        </div>
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">📰</div><div class="reel-placeholder-text">mag1.jpg</div></div>
+          <!-- <img src="mag1.jpg" alt="Magazine Layout" /> -->
+          <div class="reel-info"><div class="reel-cat">Graphic Design</div><div class="reel-title">Magazine Type Layouts</div></div>
+        </div>
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">📦</div><div class="reel-placeholder-text">mockup1.jpg</div></div>
+          <!-- <img src="mockup1.jpg" alt="Mockup Design" /> -->
+          <div class="reel-info"><div class="reel-cat">Graphic Design</div><div class="reel-title">Mockup Designs</div></div>
+        </div>
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">🎞️</div><div class="reel-placeholder-text">video2.jpg</div></div>
+          <!-- <img src="video2.jpg" alt="Long Form Video" /> -->
+          <div class="reel-info"><div class="reel-cat">Video Editing</div><div class="reel-title">Long-Form Videos</div></div>
+        </div>
+        <!-- DUPLICATES (do not remove) -->
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">🎨</div><div class="reel-placeholder-text">ads1.jpg</div></div>
+          <!-- <img src="ads1.jpg" alt="Advertising Design 1" /> -->
+          <div class="reel-info"><div class="reel-cat">Graphic Design</div><div class="reel-title">Advertising Designs</div></div>
+        </div>
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">🖼️</div><div class="reel-placeholder-text">thumb1.jpg</div></div>
+          <!-- <img src="thumb1.jpg" alt="Thumbnail 1" /> -->
+          <div class="reel-info"><div class="reel-cat">Thumbnail</div><div class="reel-title">Shorts & Reels Thumbnails</div></div>
+        </div>
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">🎬</div><div class="reel-placeholder-text">video1.jpg</div></div>
+          <!-- <img src="video1.jpg" alt="Video Edit 1" /> -->
+          <div class="reel-info"><div class="reel-cat">Video Editing</div><div class="reel-title">Short-Form Content</div></div>
+        </div>
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">📰</div><div class="reel-placeholder-text">mag1.jpg</div></div>
+          <!-- <img src="mag1.jpg" alt="Magazine Layout" /> -->
+          <div class="reel-info"><div class="reel-cat">Graphic Design</div><div class="reel-title">Magazine Type Layouts</div></div>
+        </div>
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">📦</div><div class="reel-placeholder-text">mockup1.jpg</div></div>
+          <!-- <img src="mockup1.jpg" alt="Mockup Design" /> -->
+          <div class="reel-info"><div class="reel-cat">Graphic Design</div><div class="reel-title">Mockup Designs</div></div>
+        </div>
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">🎞️</div><div class="reel-placeholder-text">video2.jpg</div></div>
+          <!-- <img src="video2.jpg" alt="Long Form Video" /> -->
+          <div class="reel-info"><div class="reel-cat">Video Editing</div><div class="reel-title">Long-Form Videos</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 2: scrolls right (reverse) -->
+    <div class="reel-row">
+      <div class="reel-track">
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">🖼️</div><div class="reel-placeholder-text">thumb2.jpg</div></div>
+          <!-- <img src="thumb2.jpg" alt="Thumbnail 2" /> -->
+          <div class="reel-info"><div class="reel-cat">Thumbnail</div><div class="reel-title">Click-Optimized Thumbnails</div></div>
+        </div>
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">🎬</div><div class="reel-placeholder-text">video3.jpg</div></div>
+          <!-- <img src="video3.jpg" alt="Video Edit 2" /> -->
+          <div class="reel-info"><div class="reel-cat">Video Editing</div><div class="reel-title">High-Retention Cuts</div></div>
+        </div>
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">🎨</div><div class="reel-placeholder-text">ads2.jpg</div></div>
+          <!-- <img src="ads2.jpg" alt="Advertising Design 2" /> -->
+          <div class="reel-info"><div class="reel-cat">Graphic Design</div><div class="reel-title">Promo Banner Designs</div></div>
+        </div>
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">📦</div><div class="reel-placeholder-text">mockup2.jpg</div></div>
+          <!-- <img src="mockup2.jpg" alt="Mockup 2" /> -->
+          <div class="reel-info"><div class="reel-cat">Graphic Design</div><div class="reel-title">Brand Mockups</div></div>
+        </div>
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">✨</div><div class="reel-placeholder-text">motion1.jpg</div></div>
+          <!-- <img src="motion1.jpg" alt="Motion Graphics" /> -->
+          <div class="reel-info"><div class="reel-cat">Motion</div><div class="reel-title">Motion Graphics</div></div>
+        </div>
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">📰</div><div class="reel-placeholder-text">mag2.jpg</div></div>
+          <!-- <img src="mag2.jpg" alt="Magazine 2" /> -->
+          <div class="reel-info"><div class="reel-cat">Graphic Design</div><div class="reel-title">Editorial Layouts</div></div>
+        </div>
+        <!-- DUPLICATES -->
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">🖼️</div><div class="reel-placeholder-text">thumb2.jpg</div></div>
+          <!-- <img src="thumb2.jpg" alt="Thumbnail 2" /> -->
+          <div class="reel-info"><div class="reel-cat">Thumbnail</div><div class="reel-title">Click-Optimized Thumbnails</div></div>
+        </div>
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">🎬</div><div class="reel-placeholder-text">video3.jpg</div></div>
+          <!-- <img src="video3.jpg" alt="Video Edit 2" /> -->
+          <div class="reel-info"><div class="reel-cat">Video Editing</div><div class="reel-title">High-Retention Cuts</div></div>
+        </div>
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">🎨</div><div class="reel-placeholder-text">ads2.jpg</div></div>
+          <!-- <img src="ads2.jpg" alt="Advertising Design 2" /> -->
+          <div class="reel-info"><div class="reel-cat">Graphic Design</div><div class="reel-title">Promo Banner Designs</div></div>
+        </div>
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">📦</div><div class="reel-placeholder-text">mockup2.jpg</div></div>
+          <!-- <img src="mockup2.jpg" alt="Mockup 2" /> -->
+          <div class="reel-info"><div class="reel-cat">Graphic Design</div><div class="reel-title">Brand Mockups</div></div>
+        </div>
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">✨</div><div class="reel-placeholder-text">motion1.jpg</div></div>
+          <!-- <img src="motion1.jpg" alt="Motion Graphics" /> -->
+          <div class="reel-info"><div class="reel-cat">Motion</div><div class="reel-title">Motion Graphics</div></div>
+        </div>
+        <div class="reel-card">
+          <div class="reel-placeholder"><div class="reel-placeholder-icon">📰</div><div class="reel-placeholder-text">mag2.jpg</div></div>
+          <!-- <img src="mag2.jpg" alt="Magazine 2" /> -->
+          <div class="reel-info"><div class="reel-cat">Graphic Design</div><div class="reel-title">Editorial Layouts</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══ MARQUEE ══ -->
   <div class="marquee-strip" aria-hidden="true">
     <div class="marquee-track">
       <span>VIDEO EDITING</span><span class="dot">✦</span>
       <span>GRAPHIC DESIGN</span><span class="dot">✦</span>
       <span>COLOR GRADING</span><span class="dot">✦</span>
-      <span>SHORT FORM CONTENT</span><span class="dot">✦</span>
+      <span>SHORT FORM</span><span class="dot">✦</span>
       <span>MOTION GRAPHICS</span><span class="dot">✦</span>
       <span>THUMBNAILS</span><span class="dot">✦</span>
-      <span>ADVERTISING DESIGN</span><span class="dot">✦</span>
+      <span>ADVERTISING</span><span class="dot">✦</span>
       <span>VISUAL STORYTELLING</span><span class="dot">✦</span>
-      <!-- duplicated for seamless loop -->
       <span>VIDEO EDITING</span><span class="dot">✦</span>
       <span>GRAPHIC DESIGN</span><span class="dot">✦</span>
       <span>COLOR GRADING</span><span class="dot">✦</span>
-      <span>SHORT FORM CONTENT</span><span class="dot">✦</span>
+      <span>SHORT FORM</span><span class="dot">✦</span>
       <span>MOTION GRAPHICS</span><span class="dot">✦</span>
       <span>THUMBNAILS</span><span class="dot">✦</span>
-      <span>ADVERTISING DESIGN</span><span class="dot">✦</span>
+      <span>ADVERTISING</span><span class="dot">✦</span>
       <span>VISUAL STORYTELLING</span><span class="dot">✦</span>
     </div>
   </div>
 
 
-  <!-- ===== ABOUT ===== -->
+  <!-- ══ ABOUT ══ -->
   <section id="about">
-    <div class="reveal">
-      <p class="section-label">About Me</p>
-      <h2 class="section-title">Design<br/>with<br/><span style="color:var(--purple)">Intent.</span></h2>
-      <div class="section-line"></div>
-      <div class="about-text">
-        <p>
-          I'm a <strong>Video Editor and Graphic Designer</strong> based in the Philippines.
-          Crafting visuals that stop people from skipping — and compelling stories — is what I focus on.
-        </p>
-        <br/>
-        <p>
-          Whether it's a short-form reel, a long-form video, or an advertising graphic, I aim to bring
-          your ideas to life with <strong>precision, creativity, and intention</strong>.
-        </p>
+    <div class="about-left reveal">
+      <div class="about-eyebrow">About Me</div>
+
+      <div class="about-big-quote">
+        CRAFTING<br/>
+        VISUALS<br/>
+        <span class="q-purple">THAT</span> <span class="q-outline">STICK.</span>
       </div>
 
-      <div class="about-stats">
-        <div class="stat-card">
-          <div class="stat-number">100%</div>
-          <div class="stat-label">Quality Focused</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">PH</div>
-          <div class="stat-label">Based in Philippines</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">2+</div>
-          <div class="stat-label">Years of Experience</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">∞</div>
-          <div class="stat-label">Creative Ideas</div>
-        </div>
+      <div class="about-body">
+        I'm a <strong>Video Editor and Graphic Designer</strong> based in the Philippines.
+        I make content that doesn't just look good — it <strong>performs</strong>.
+        Whether it's a hook-heavy short reel or a scroll-stopping thumbnail,
+        every frame is crafted with intention.
+      </div>
+
+      <div class="stat-strip">
+        <div class="stat-item"><div class="stat-num">2+</div><div class="stat-lbl">Years Active</div></div>
+        <div class="stat-item"><div class="stat-num">PH</div><div class="stat-lbl">Philippines</div></div>
+        <div class="stat-item"><div class="stat-num">∞</div><div class="stat-lbl">Creative Drive</div></div>
       </div>
     </div>
 
-    <div class="reveal">
-      <p class="section-label" style="margin-bottom:1.5rem">Tools I Use</p>
+    <div class="about-right reveal reveal-delay-2">
+      <div class="available-card">
+        <div class="available-dot">Currently Available</div>
+        <h3>Open for Freelance & Collabs</h3>
+        <p>Got a project? I'm taking on new work — video editing, graphic design, content creation, and creative partnerships.</p>
+      </div>
+
+      <div class="tools-label">Tools I Work With</div>
       <div class="tools-grid">
-        <div class="tool-item">
-          <div class="tool-icon">🎬</div>
-          <div class="tool-name">After Effects</div>
-        </div>
-        <div class="tool-item">
-          <div class="tool-icon">✂️</div>
-          <div class="tool-name">CapCut</div>
-        </div>
-        <div class="tool-item">
-          <div class="tool-icon">🎞️</div>
-          <div class="tool-name">DaVinci Resolve</div>
-        </div>
-        <div class="tool-item">
-          <div class="tool-icon">🎨</div>
-          <div class="tool-name">Canva</div>
-        </div>
-        <div class="tool-item">
-          <div class="tool-icon">🖌️</div>
-          <div class="tool-name">GIMP</div>
-        </div>
-        <div class="tool-item">
-          <div class="tool-icon">🖍️</div>
-          <div class="tool-name">Krita</div>
-        </div>
+        <div class="tool-chip"><img src="ae.png" alt="After Effects" class="tool-img"/><div class="tn">After Effects</div></div>
+        <div class="tool-chip"><img src="capcut.png" alt="CapCut" class="tool-img"/><div class="tn">CapCut</div></div>
+        <div class="tool-chip"><img src="davinci.png" alt="DaVinci" class="tool-img"/><div class="tn">DaVinci</div></div>
+        <div class="tool-chip"><img src="canva.png" alt="Canva" class="tool-img"/><div class="tn">Canva</div></div>
+        <div class="tool-chip"><img src="gimp.png" alt="Gimp" class="tool-img"><div class="tn">GIMP</div></div>
+        <div class="tool-chip"><img src="krita.png" alt="Krita" class="tool-img"><div class="tn">Krita</div></div>
       </div>
     </div>
   </section>
 
 
-  <!-- ===== SKILLS ===== -->
+  <!-- ══ SKILLS ══ -->
   <section id="skills">
-    <div class="skills-intro reveal">
-      <p class="section-label">What I Do</p>
-      <h2 class="section-title">Skills &<br/><span style="color:var(--purple)">Expertise.</span></h2>
-      <div class="section-line"></div>
-      <p>Everything I do is built to grab attention, keep it, and leave an impression.</p>
-    </div>
-
-    <div class="skills-grid">
-      <div class="skill-card reveal">
-        <div class="skill-icon">⚡</div>
-        <div class="skill-name">Scroll-Stopping Edits</div>
-        <div class="skill-desc">Edits crafted to immediately hook the viewer and stop the thumb from scrolling past.</div>
-      </div>
-      <div class="skill-card reveal">
-        <div class="skill-icon">📱</div>
-        <div class="skill-name">Engaging Short-Form Content</div>
-        <div class="skill-desc">Reels, Shorts, and TikToks that are punchy, fast, and built for the algorithm.</div>
-      </div>
-      <div class="skill-card reveal">
-        <div class="skill-icon">🎯</div>
-        <div class="skill-name">Trend-Based Visual Editing</div>
-        <div class="skill-desc">Staying on top of current visual trends and applying them with purpose.</div>
-      </div>
-      <div class="skill-card reveal">
-        <div class="skill-icon">✂️</div>
-        <div class="skill-name">High-Retention Cut Style</div>
-        <div class="skill-desc">Strategic cuts that keep viewers watching all the way to the end.</div>
-      </div>
-      <div class="skill-card reveal">
-        <div class="skill-icon">🌈</div>
-        <div class="skill-name">Color Grading & Enhancement</div>
-        <div class="skill-desc">Cinematic color grades that make footage look polished and professional.</div>
-      </div>
-      <div class="skill-card reveal">
-        <div class="skill-icon">🖼️</div>
-        <div class="skill-name">Click-Optimized Thumbnails</div>
-        <div class="skill-desc">Thumbnails designed to maximize click-through rates on YouTube and other platforms.</div>
-      </div>
-      <div class="skill-card reveal">
-        <div class="skill-icon">✨</div>
-        <div class="skill-name">Eye-Catching Motion Graphics</div>
-        <div class="skill-desc">Animated elements that add energy and professionalism to any video.</div>
-      </div>
-      <div class="skill-card reveal">
-        <div class="skill-icon">📖</div>
-        <div class="skill-name">Hook-Focused Visual Storytelling</div>
-        <div class="skill-desc">Every visual tells a story. I make sure yours is one people want to hear.</div>
-      </div>
-    </div>
-  </section>
-
-
-  <!-- ===== PROJECTS ===== -->
-  <section id="projects">
-    <div class="projects-header reveal">
+    <div class="skills-top reveal">
       <div>
-        <p class="section-label">My Work</p>
-        <h2 class="section-title">Projects.</h2>
-        <div class="section-line"></div>
-      </div>
-      <div class="projects-filter">
-        <button class="filter-btn active" data-filter="all">All</button>
-        <button class="filter-btn" data-filter="graphic">Graphic Design</button>
-        <button class="filter-btn" data-filter="video">Video Editing</button>
+        <div class="section-eyebrow">What I Do</div>
+        <div class="section-title">SKILLS &<br/><span style="color:var(--purple)">CRAFT.</span></div>
       </div>
     </div>
 
-    <div class="projects-grid" id="projectsGrid">
+    <!-- 4 big numbered cards -->
+    <div class="skills-numbered reveal">
+      <div class="skill-num-card" data-num="01">
+        <div class="snc-num">01</div>
+        <div class="snc-title">Scroll-Stopping Edits</div>
+        <div class="snc-desc">Hook-first edits built to stop thumbs and pull people in within the first second.</div>
+      </div>
+      <div class="skill-num-card" data-num="02">
+        <div class="snc-num">02</div>
+        <div class="snc-title">Short-Form Content</div>
+        <div class="snc-desc">Punchy Reels, Shorts, and TikToks engineered for maximum retention and reach.</div>
+      </div>
+      <div class="skill-num-card" data-num="03">
+        <div class="snc-num">03</div>
+        <div class="snc-title">Color Grading</div>
+        <div class="snc-desc">Cinematic grades that transform raw footage into polished, professional visuals.</div>
+      </div>
+      <div class="skill-num-card" data-num="04">
+        <div class="snc-num">04</div>
+        <div class="snc-title">Graphic Design</div>
+        <div class="snc-desc">From ads to mockups to thumbnails — clean, purposeful, click-worthy design.</div>
+      </div>
+    </div>
 
-      <!-- PROJECT 1 — Advertising Design -->
-      <!-- =====================================================================
-           HOW TO ADD YOUR PROJECT IMAGES:
-           1. Save your image file (e.g. ads-design.jpg) in the same folder
-           2. In the card below, find <div class="project-img-placeholder">
-           3. DELETE that whole placeholder div
-           4. ADD this line instead:
-              <img src="ads-design.jpg" alt="Advertising Design" class="project-img" />
-      ===================================================================== -->
-      <div class="project-card reveal" data-category="graphic">
-        <div class="project-img-placeholder">
-          <svg width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-          <span>TO BE UPLOADED SOON<br/>advertising design image</span>
+    <!-- list of skills -->
+    <div class="skills-rows reveal">
+      <div class="skill-row">
+        <span class="skill-row-num">05</span>
+        <span class="skill-row-name">Trend-Based Visual Editing</span>
+        <span class="skill-row-tag">Video</span>
+      </div>
+      <div class="skill-row">
+        <span class="skill-row-num">06</span>
+        <span class="skill-row-name">High-Retention Cut Style</span>
+        <span class="skill-row-tag">Video</span>
+      </div>
+      <div class="skill-row">
+        <span class="skill-row-num">07</span>
+        <span class="skill-row-name">Click-Optimized Thumbnails</span>
+        <span class="skill-row-tag">Design</span>
+      </div>
+      <div class="skill-row">
+        <span class="skill-row-num">08</span>
+        <span class="skill-row-name">Eye-Catching Motion Graphics</span>
+        <span class="skill-row-tag">Motion</span>
+      </div>
+      <div class="skill-row">
+        <span class="skill-row-num">09</span>
+        <span class="skill-row-name">Hook-Focused Visual Storytelling</span>
+        <span class="skill-row-tag">Strategy</span>
+      </div>
+      <div class="skill-row">
+        <span class="skill-row-num">10</span>
+        <span class="skill-row-name">Advertising & Promo Designs</span>
+        <span class="skill-row-tag">Design</span>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══ PROJECTS (full grid) ══ -->
+  <section id="projects">
+    <div class="proj-top reveal">
+      <div>
+        <div class="section-eyebrow">My Work</div>
+        <div class="section-title">ALL<br/><span style="color:var(--purple)">PROJECTS.</span></div>
+      </div>
+      <div class="filter-row">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="graphic">Graphic</button>
+        <button class="filter-btn" data-filter="video">Video</button>
+      </div>
+    </div>
+
+    <div class="proj-grid" id="projGrid">
+
+      <!-- ADD IMAGES same way as the reel cards:
+           Delete the proj-placeholder div, add <img src="filename.jpg" class="proj-img" alt="..." /> -->
+
+      <div class="proj-card reveal" data-category="graphic">
+        <div class="proj-placeholder">
+          <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>TO BE UPLOADED SOON</span>
         </div>
-        <div class="project-info">
-          <div class="project-category">Graphic Design</div>
-          <div class="project-title">Advertising Designs</div>
-          <div class="project-desc">Sales posters, promo banners, and marketing graphics built to drive action.</div>
+        <div class="proj-info">
+          <div class="proj-cat">Graphic Design</div>
+          <div class="proj-title">Advertising Designs</div>
+          <div class="proj-desc">Sales posters, promo banners, and marketing graphics built to drive action.</div>
         </div>
       </div>
 
-      <!-- PROJECT 2 — Magazine Type -->
-      <div class="project-card reveal" data-category="graphic">
-        <div class="project-img-placeholder">
-          <svg width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-          <span>TO BE UPLOADED SOON<br/>magazine design image</span>
+      <div class="proj-card reveal reveal-delay-1" data-category="graphic">
+        <div class="proj-placeholder">
+          <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>TO BE UPLOADED SOON</span>
         </div>
-        <div class="project-info">
-          <div class="project-category">Graphic Design</div>
-          <div class="project-title">Magazine Type Layouts</div>
-          <div class="project-desc">Editorial-style layouts with clean typography and structured visual hierarchy.</div>
-        </div>
-      </div>
-
-      <!-- PROJECT 3 — Mockup Designs -->
-      <div class="project-card reveal" data-category="graphic">
-        <div class="project-img-placeholder">
-          <svg width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-          <span>TO BE UPLOADED SOON<br/>mockup design image</span>
-        </div>
-        <div class="project-info">
-          <div class="project-category">Graphic Design</div>
-          <div class="project-title">Mockup Designs</div>
-          <div class="project-desc">Product and brand mockups that make designs look real and ready to present.</div>
+        <div class="proj-info">
+          <div class="proj-cat">Graphic Design</div>
+          <div class="proj-title">Magazine Type Layouts</div>
+          <div class="proj-desc">Editorial-style layouts with clean type and strong visual hierarchy.</div>
         </div>
       </div>
 
-      <!-- PROJECT 4 — Thumbnails -->
-      <div class="project-card reveal" data-category="graphic">
-        <div class="project-img-placeholder">
-          <svg width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-          <span>TO BE UPLOADED SOON<br/>thumbnail image</span>
+      <div class="proj-card reveal reveal-delay-2" data-category="graphic">
+        <div class="proj-placeholder">
+          <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>TO BE UPLOADED SOON</span>
         </div>
-        <div class="project-info">
-          <div class="project-category">Graphic Design</div>
-          <div class="project-title">Shorts/Reels Thumbnails</div>
-          <div class="project-desc">High-CTR thumbnails designed for Shorts, Reels, and YouTube content.</div>
-        </div>
-      </div>
-
-      <!-- PROJECT 5 — Video Editing Short Form -->
-      <div class="project-card reveal" data-category="video">
-        <div class="project-img-placeholder">
-          <svg width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><polygon points="5,3 19,12 5,21"/></svg>
-          <span>TO BE UPLOADED SOON<br/>short-form video screenshot</span>
-        </div>
-        <div class="project-info">
-          <div class="project-category">Video Editing</div>
-          <div class="project-title">Short-Form Content</div>
-          <div class="project-desc">Fast-paced, hook-driven short videos for Reels, TikTok, and YouTube Shorts.</div>
+        <div class="proj-info">
+          <div class="proj-cat">Graphic Design</div>
+          <div class="proj-title">Mockup Designs</div>
+          <div class="proj-desc">Brand and product mockups that make designs look real and presentable.</div>
         </div>
       </div>
 
-      <!-- PROJECT 6 — Video Editing Long Form -->
-      <div class="project-card reveal" data-category="video">
-        <div class="project-img-placeholder">
-          <svg width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><polygon points="5,3 19,12 5,21"/></svg>
-          <span>TO BE UPLOADED SOON<br/>long-form video screenshot</span>
+      <div class="proj-card reveal" data-category="graphic">
+        <div class="proj-placeholder">
+          <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span>TO BE UPLOADED SOON</span>
         </div>
-        <div class="project-info">
-          <div class="project-category">Video Editing</div>
-          <div class="project-title">Long-Form Videos</div>
-          <div class="project-desc">YouTube-style long videos with pacing, storytelling, and retention in mind.</div>
+        <div class="proj-info">
+          <div class="proj-cat">Graphic Design</div>
+          <div class="proj-title">Shorts / Reels Thumbnails</div>
+          <div class="proj-desc">High-CTR thumbnails made to get clicked on YouTube, Reels, and Shorts.</div>
+        </div>
+      </div>
+
+      <div class="proj-card reveal reveal-delay-1" data-category="video">
+        <div class="proj-placeholder">
+          <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><polygon points="5,3 19,12 5,21"/></svg>
+          <span>TO BE UPLOADED SOON</span>
+        </div>
+        <div class="proj-info">
+          <div class="proj-cat">Video Editing</div>
+          <div class="proj-title">Short-Form Content</div>
+          <div class="proj-desc">Fast, hook-driven videos built for Reels, TikTok, and YouTube Shorts.</div>
+        </div>
+      </div>
+
+      <div class="proj-card reveal reveal-delay-2" data-category="video">
+        <div class="proj-placeholder">
+          <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><polygon points="5,3 19,12 5,21"/></svg>
+          <span>TO BE UPLOADED SOON</span>
+        </div>
+        <div class="proj-info">
+          <div class="proj-cat">Video Editing</div>
+          <div class="proj-title">Long-Form Videos</div>
+          <div class="proj-desc">YouTube-style long videos with tight pacing and storytelling built for watch time.</div>
         </div>
       </div>
 
@@ -1093,107 +1063,77 @@
   </section>
 
 
-  <!-- ===== CONTACT / CTA ===== -->
+  <!-- ══ CONTACT ══ -->
   <section id="contact">
     <div class="reveal">
-      <div class="cta-taglines">
-        <span class="cta-tagline">Design With Intention</span>
-        <span class="cta-tagline">Design With Purpose</span>
+      <div class="contact-pills">
+        <span class="contact-pill">Design With Intention</span>
+        <span class="contact-pill">Design With Purpose</span>
       </div>
-      <h2 class="section-title">Let's<br/><span style="color:var(--purple)">Work.</span></h2>
-      <p>Have a project in mind? I'm open to collaborations, freelance work, and creative partnerships.</p>
-      <div class="contact-buttons">
-        <!--
-          CHANGE THIS EMAIL:
-          Replace "youremail@gmail.com" below with your actual email address.
-        -->
-        <a href="mailto:imzarrey@gmail.com" class="btn btn-primary">
-          📧 Email Me
-        </a>
-        <!--
-          CHANGE THIS GOOGLE DRIVE LINK:
-          Replace the href below with your actual Google Drive portfolio link.
-        -->
-        <a href="https://drive.google.com/drive/folders/1C3RNBUJT9lYuwFUsT9GDzT0Yxj-iFDc3?usp=drive_link" target="_blank" class="btn btn-ghost">
-          📁 View Full Work on Drive
-        </a>
+
+      <div class="contact-title">
+        LET'S<br/><span class="ct-outline">GET</span> <span class="ct-purple">TO</span><br/>WRK<span class="ct-purple">.</span>
+      </div>
+
+      <p class="contact-sub">Got a project? A vision? A deadline? I'm ready. Let's make something people can't scroll past.</p>
+
+      <div class="contact-btns">
+        <a href="mailto:imzarrey@gmail.com" class="btn btn-primary">📧 Email Me</a>
+        <a href="https://drive.google.com/drive/folders/1C3RNBUJT9lYuwFUsT9GDzT0Yxj-iFDc3?usp=drive_link" target="_blank" class="btn btn-ghost">📁 Full Work on Drive</a>
+      </div>
+
+      <div class="social-row">
+        <a href="#" class="social-link">Facebook</a>
+        <span style="color:#222;font-size:0.6rem">—</span>
+        <a href="https://www.instagram.com/reywrks/" target="_blank" class="social-link">Instagram</a>
+        <span style="color:#222;font-size:0.6rem">—</span>
+        <a href="#" class="social-link">YouTube</a>
       </div>
     </div>
   </section>
 
 
-  <!-- ===== FOOTER ===== -->
+  <!-- ══ FOOTER ══ -->
   <footer>
     <div class="footer-logo">Rey<span>WRKS</span>.</div>
     <div class="footer-copy">© 2025 ReyWRKS. All rights reserved.</div>
-    <div class="footer-socials">
-      <!--
-        ADD YOUR SOCIAL LINKS:
-        Replace # with your actual profile URLs.
-      -->
-      <a href="#">Facebook</a>
-      <a href="https://www.instagram.com/reywrks/">Instagram</a>
-      <a href="#">YouTube</a>
-    </div>
+    <div class="footer-right">Made with intention.</div>
   </footer>
 
 
-  <!-- ===== JAVASCRIPT ===== -->
   <script>
-    // --- HAMBURGER MENU ---
-    const hamburger = document.getElementById('hamburger');
-    const navLinks  = document.getElementById('navLinks');
-    hamburger.addEventListener('click', () => {
-      navLinks.classList.toggle('open');
-    });
-    // close menu when a link is clicked
-    navLinks.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => navLinks.classList.remove('open'));
+    // nav background on scroll
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
     });
 
-    // --- SCROLL REVEAL ---
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry, i) => {
+    // hamburger
+    const hb = document.getElementById('hamburger');
+    const nl = document.getElementById('navLinks');
+    hb.addEventListener('click', () => nl.classList.toggle('open'));
+    nl.querySelectorAll('a').forEach(l => l.addEventListener('click', () => nl.classList.remove('open')));
+
+    // scroll reveal
+    const revealObs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
         if (entry.isIntersecting) {
-          // stagger each card a little
-          setTimeout(() => {
-            entry.target.classList.add('visible');
-          }, 80);
-          observer.unobserve(entry.target);
+          entry.target.classList.add('visible');
+          revealObs.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.12 });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-    // --- PROJECT FILTER ---
-    const filterBtns   = document.querySelectorAll('.filter-btn');
-    const projectCards = document.querySelectorAll('.project-card');
-
-    filterBtns.forEach(btn => {
+    // project filter
+    document.querySelectorAll('.filter-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-
-        const filter = btn.dataset.filter;
-        projectCards.forEach(card => {
-          if (filter === 'all' || card.dataset.category === filter) {
-            card.style.display = 'block';
-          } else {
-            card.style.display = 'none';
-          }
+        const f = btn.dataset.filter;
+        document.querySelectorAll('.proj-card').forEach(card => {
+          card.style.display = (f === 'all' || card.dataset.category === f) ? 'block' : 'none';
         });
       });
-    });
-
-    // --- NAV SHADOW ON SCROLL ---
-    window.addEventListener('scroll', () => {
-      const nav = document.getElementById('navbar');
-      if (window.scrollY > 50) {
-        nav.style.boxShadow = '0 4px 40px rgba(0,0,0,0.6)';
-      } else {
-        nav.style.boxShadow = 'none';
-      }
     });
   </script>
 
