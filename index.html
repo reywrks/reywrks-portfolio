@@ -174,7 +174,7 @@
   .drag-hint svg{width:15px;height:15px}
 
   .carousel{position:relative;overflow:hidden;padding:.5rem 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent);mask-image:linear-gradient(90deg,transparent,#000 4%,#000 96%,transparent)}
-  .track{display:flex;gap:1.1rem;padding:0 2.5rem;width:max-content;cursor:grab;will-change:transform}
+  .track{display:flex;gap:1.1rem;padding:0 2.5rem;width:max-content;cursor:grab;will-change:transform;touch-action:pan-y}
   .track.dragging{cursor:grabbing}
 
   .p-card{flex-shrink:0;width:300px;border:1px solid var(--glass-border);border-radius:18px;overflow:hidden;background:var(--glass);backdrop-filter:blur(20px) saturate(1.3);-webkit-backdrop-filter:blur(20px) saturate(1.3);transition:transform .5s var(--ease-out),border-color .3s,box-shadow .5s var(--ease-out);box-shadow:inset 0 1px 0 var(--glass-hi)}
@@ -224,7 +224,7 @@
   .fb-head{text-align:center;margin-bottom:3rem}
   .fb-head .eyebrow{justify-content:center}.fb-head .eyebrow::before{display:none}
   .fb-strip{overflow:hidden;position:relative;margin:0 -2.5rem;padding:.5rem 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
-  .fb-track{display:flex;gap:1rem;width:max-content;will-change:transform}
+  .fb-track{display:flex;gap:1rem;width:max-content;will-change:transform;touch-action:pan-y}
   .fb-card{width:230px;flex-shrink:0;border:1px solid var(--glass-border);border-radius:16px;overflow:hidden;background:var(--bg-3);cursor:pointer;transition:border-color .3s,transform .35s var(--ease-out),box-shadow .35s;box-shadow:inset 0 1px 0 var(--glass-hi)}
   .fb-card:hover{border-color:var(--glass-hi);transform:scale(1.03) translateY(-3px);box-shadow:inset 0 1px 0 var(--glass-hi),var(--shadow)}
   .fb-card img{width:100%;height:100%;object-fit:cover;display:block;aspect-ratio:5/4;transition:transform .6s var(--ease-out);-webkit-user-drag:none;user-select:none}
@@ -385,15 +385,6 @@
 <section id="work">
   <div class="work-head reveal">
     <div><div class="eyebrow">Selected Work</div><h2 class="h-title">Projects</h2></div>
-    <div class="filters" id="filters">
-      <button class="filter active" data-f="all">All</button>
-      <button class="filter" data-f="reels">Reels / Clips</button>
-      <button class="filter" data-f="ai">AI Content</button>
-      <button class="filter" data-f="motion">Motion</button>
-      <button class="filter" data-f="design">Design</button>
-    </div>
-  </div>
-  <div class="work-head" style="margin-bottom:1.6rem">
     <div class="drag-hint">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6L4 12l4 6M16 6l4 6-4 6"/></svg>
       Drag to explore · click any project to open
@@ -536,10 +527,10 @@
     <p class="contact-sub">Got a project or need an editor on your team? Message me and I'll get back to you fast.</p>
     <div class="contact-btns">
       <!-- CHANGE to your real handles -->
-      <a href="https://instagram.com/reywrks" target="_blank" class="btn btn-solid">
+      <a href="https://instagram.com/reywrks.ai" target="_blank" class="btn btn-solid">
         <svg class="social-icon" viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.3 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.3 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.3-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2-.1-1.3-.1-1.7-.1-4.9s0-3.6.1-4.9c.1-1.2.3-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4 1.3-.1 1.7-.1 4.9-.1m0 1.9c-3.1 0-3.5 0-4.7.1-1.1.1-1.7.2-2.1.4-.5.2-.9.4-1.3.8-.4.4-.6.8-.8 1.3-.2.4-.3 1-.4 2.1C2.6 10 2.6 10.4 2.6 12s0 2 .1 3.2c.1 1.1.2 1.7.4 2.1.2.5.4.9.8 1.3.4.4.8.6 1.3.8.4.2 1 .3 2.1.4 1.2.1 1.6.1 4.7.1s3.5 0 4.7-.1c1.1-.1 1.7-.2 2.1-.4.5-.2.9-.4 1.3-.8.4-.4.6-.8.8-1.3.2-.4.3-1 .4-2.1.1-1.2.1-1.6.1-3.2s0-2-.1-3.2c-.1-1.1-.2-1.7-.4-2.1-.2-.5-.4-.9-.8-1.3-.4-.4-.8-.6-1.3-.8-.4-.2-1-.3-2.1-.4-1.2-.1-1.6-.1-4.7-.1m0 3.3a4.6 4.6 0 1 0 0 9.2 4.6 4.6 0 0 0 0-9.2m0 7.6a3 3 0 1 1 0-6 3 3 0 0 1 0 6m5.8-7.8a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0"/></svg>
         Instagram</a>
-      <a href="https://t.me/justmezar" target="_blank" class="btn btn-line">
+      <a href="https://t.me/aireywrks" target="_blank" class="btn btn-line">
         <svg class="social-icon" viewBox="0 0 24 24"><path d="M21.9 4.3l-3.3 15.6c-.2 1.1-.9 1.4-1.9.9l-5.1-3.8-2.5 2.4c-.3.3-.5.5-1 .5l.4-5.1L18 5.5c.4-.4-.1-.6-.6-.2L6.8 12.1l-4.9-1.5c-1.1-.3-1.1-1 .2-1.5L20.5 2.5c.9-.3 1.7.2 1.4 1.8z"/></svg>
         Telegram</a>
     </div>
@@ -680,23 +671,44 @@
       });
     }
 
+    let startY=0, axisLocked=false, horizontal=false;
     trackEl.addEventListener('pointerdown',e=>{
-      dragging=true; moved=0; startX=e.clientX; startPos=pos;
+      dragging=true; moved=0; axisLocked=false; horizontal=false;
+      startX=e.clientX; startY=e.clientY; startPos=pos;
       trackEl.classList.add('dragging');
-      try{trackEl.setPointerCapture(e.pointerId);}catch(_){}
     });
     trackEl.addEventListener('pointermove',e=>{
       if(!dragging)return;
       const dx=e.clientX-startX;
-      if(Math.abs(dx)>4) moved=Math.abs(dx);
-      pos=startPos+dx;
+      const dy=e.clientY-startY;
+      // decide once whether this gesture is horizontal (drag cards) or vertical (scroll page)
+      if(!axisLocked && (Math.abs(dx)>6 || Math.abs(dy)>6)){
+        axisLocked=true;
+        horizontal=Math.abs(dx)>Math.abs(dy);
+        if(horizontal){ try{trackEl.setPointerCapture(e.pointerId);}catch(_){} }
+      }
+      if(axisLocked && !horizontal){
+        // vertical gesture: let the page scroll, stop dragging the cards entirely
+        dragging=false;
+        return;
+      }
+      if(horizontal){
+        if(e.cancelable) e.preventDefault();  // block page scroll while dragging cards
+        if(Math.abs(dx)>4) moved=Math.abs(dx);
+        pos=startPos+dx;
+      }
     });
-    function up(){ dragging=false; trackEl.classList.remove('dragging'); }
+    function up(){ dragging=false; axisLocked=false; horizontal=false; trackEl.classList.remove('dragging'); }
     trackEl.addEventListener('pointerup',up);
     trackEl.addEventListener('pointercancel',up);
 
     let currentFilter='all';
-    window.addEventListener('resize',()=>build(currentFilter));
+    let lastW=window.innerWidth;
+    window.addEventListener('resize',()=>{
+      // mobile browsers fire resize when the address bar shows/hides (height change).
+      // only rebuild if the WIDTH actually changed, so cards don't jump to start on scroll.
+      if(window.innerWidth!==lastW){ lastW=window.innerWidth; build(currentFilter); }
+    });
 
     function tick(){
       if(!dragging && unit>0) pos-=speed;
@@ -754,12 +766,7 @@
   document.getElementById('modalBg').addEventListener('click',closeModal);
   document.getElementById('modalClose').addEventListener('click',closeModal);
 
-  // ===== filter (rebuilds the carousel so the loop always fills) =====
-  document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{
-    document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
-    projCar.setFilter(b.dataset.f);
-  }));
+  // (filters removed - all projects show together)
 
   // ===== feedback lightbox =====
   function openLB(src){const lb=document.getElementById('lightbox');document.getElementById('lightboxImg').src=src;lb.classList.add('open');document.body.style.overflow='hidden';}
